@@ -45,6 +45,13 @@ void Database::disconnect() {
 bool Database::isConnected() const { return connected; }
 
 SQLHSTMT Database::createStatement() {
+    
+    if (!connected || hDbc == SQL_NULL_HDBC) {
+        disconnect(); 
+       
+        connect("Driver={ODBC Driver 17 for SQL Server};Server=localhost;Database=ATM_DB;Trusted_Connection=yes;");
+    }
+
     SQLHSTMT hStmt;
     SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
     return hStmt;

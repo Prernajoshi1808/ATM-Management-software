@@ -261,7 +261,12 @@ void ATMGui::updateBalance() {
         double bal = atm.checkBalance();
         std::ostringstream oss;
         oss << "Balance: Rs. " << std::fixed << std::setprecision(2) << bal;
-        std::wstring wbal(oss.str().begin(), oss.str().end());
+        
+        //  Save the string to a local variable so it doesn't vanish!
+        std::string sbal = oss.str();
+        std::wstring wbal(sbal.begin(), sbal.end());
+        
+        // Update both labels safely
         if (hMenuBalance) SetWindowTextW(hMenuBalance, wbal.c_str());
         if (hWithdrawBalance) SetWindowTextW(hWithdrawBalance, wbal.c_str());
     }
@@ -419,14 +424,14 @@ void ATMGui::onEjectCard() {
 LRESULT CALLBACK ATMGui::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     ATMGui* self = instance;
     switch (msg) {
-        case WM_TIMER: {
-       
+        
+    
+    case WM_TIMER: {
         if (wParam == 1 && self && self->hTimeLabel) {
             SYSTEMTIME st;
-            GetLocalTime(&st); // Grab the computer's live time
+            GetLocalTime(&st); 
             
             wchar_t timeStr[100];
-        
             wsprintfW(timeStr, L"Date: %02d/%02d/%04d   Time: %02d:%02d:%02d", 
                 st.wDay, st.wMonth, st.wYear, 
                 st.wHour, st.wMinute, st.wSecond);
